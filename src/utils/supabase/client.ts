@@ -1,18 +1,15 @@
 // src/utils/supabase/client.ts
 import { createBrowserClient } from "@supabase/ssr";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+// Add safe placeholder fallbacks so the Vercel compiler doesn't crash:
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder-project.supabase.co';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 'placeholder-anon-key';
 
 export const createClient = () =>
   createBrowserClient(
-    supabaseUrl!,
-    supabaseKey!,
+    supabaseUrl,
+    supabaseKey,
   );
-
-// ==========================================
-// Added helper exports needed for the Dashboard:
-// ==========================================
 
 export const isSupabaseConfigured = !!(
   process.env.NEXT_PUBLIC_SUPABASE_URL && 

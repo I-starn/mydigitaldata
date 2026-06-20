@@ -6,9 +6,14 @@ import Dashboard from '../../components/Dashboard';
 import Auth from '../../components/Auth';
 import NeonBackground from '../../components/NeonBackground';
 
+// Forces Next.js to skip pre-rendering this page during Vercel builds:
+export const dynamic = 'force-dynamic';
+
 export default function DashboardPage() {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
