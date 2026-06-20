@@ -17,7 +17,7 @@ export default function Auth() {
     setMessage('');
 
     if (!isSupabaseConfigured) {
-      setMessage('Operating in local offline mode. Add your environment credentials to enable active accounts.');
+      setMessage('The application is running in local offline mode. Add your environment credentials to enable active accounts.');
       setLoading(false);
       return;
     }
@@ -48,27 +48,36 @@ export default function Auth() {
         className="w-full max-w-md glass-panel p-8 rounded-2xl shadow-neonCyan relative border border-white/10"
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neonCyan to-neonPink rounded-t-2xl" />
-        <h2 className="text-3xl font-bold tracking-tight text-white mb-2 text-center">
-          {isSignUp ? 'Create Workspace' : 'Garage Hub Login'}
-        </h2>
-        <p className="text-gray-400 text-sm mb-6 text-center">
-          Access your revenue statistics, customer database, and service alerts
-        </p>
+        
+        {/* Company Branding Header */}
+        <div className="flex flex-col items-center mb-6 text-center">
+          <img 
+            src="/logo.png" 
+            alt="work24/6 motors Logo" 
+            className="w-20 h-20 object-contain drop-shadow-[0_0_10px_rgba(0,240,255,0.25)] mb-3"
+          />
+          <h1 className="text-xl font-black tracking-wider text-white uppercase">
+            WORK<span className="text-neonCyan">24/6</span> MOTORS
+          </h1>
+          <p className="text-[11px] text-gray-400 italic tracking-wide mt-1">
+            "The hands your car deserves!"
+          </p>
+        </div>
 
         <form onSubmit={handleAuth} className="space-y-4">
           <div>
-            <label className="block text-xs uppercase tracking-wider text-gray-400 mb-2 font-medium">Email Address</label>
+            <label className="block text-xs uppercase tracking-wider text-gray-400 mb-2 font-semibold">Email Address</label>
             <input
               type="email"
               required
               className="w-full p-3 rounded-lg glass-input text-sm"
-              placeholder="name@company.com"
+              placeholder="name@work246.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div>
-            <label className="block text-xs uppercase tracking-wider text-gray-400 mb-2 font-medium">Password</label>
+            <label className="block text-xs uppercase tracking-wider text-gray-400 mb-2 font-semibold">Password</label>
             <input
               type="password"
               required
@@ -95,7 +104,7 @@ export default function Auth() {
         )}
 
         <div className="mt-6 text-center text-xs text-gray-400">
-          {isSignUp ? 'Already have a secure workspace?' : 'First time running the system?'}
+          {isSignUp ? 'Already have an existing garage profile?' : 'First time running the system?'}
           <button
             onClick={() => {
               setIsSignUp(!isSignUp);

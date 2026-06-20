@@ -6,6 +6,7 @@ import { getCachedServices, setCachedServices, fetchAndSyncServices } from '../a
 import AnalyticsChart from './AnalyticsChart';
 import RemindersList from './RemindersList';
 import ServiceForm from './ServiceForm';
+import ServiceDetailModal from './ServiceDetailModal';
 import { motion } from 'framer-motion';
 
 const MONTHS = [
@@ -16,6 +17,7 @@ const MONTHS = [
 export default function Dashboard({ session }: { session: any }) {
   const [services, setServices] = useState<ServiceRecord[]>([]);
   const [isOpenForm, setIsOpenForm] = useState(false);
+  const [selectedPreviewLog, setSelectedPreviewLog] = useState<ServiceRecord | null>(null);
   const user = session.user;
 
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
@@ -115,11 +117,22 @@ export default function Dashboard({ session }: { session: any }) {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl animate-fade-in">
-      {/* Header */}
+      {/* Header with Glowing hexagonal logo */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">Garage Dashboard</h1>
-          <p className="text-gray-400 text-sm">Real-time revenue, profit & service reminders</p>
+        <div className="flex items-center">
+          <img 
+            src="/logo.png" 
+            alt="work24/6 motors Logo" 
+            className="w-14 h-14 object-contain drop-shadow-[0_0_8px_rgba(0,240,255,0.35)] mr-4"
+          />
+          <div>
+            <h1 className="text-2xl font-black tracking-wide text-white uppercase">
+              WORK<span className="text-neonCyan">24/6</span> MOTORS
+            </h1>
+            <p className="text-xs text-gray-400 italic font-medium mt-0.5">
+              "The hands your car deserves!"
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
           <button 
@@ -213,7 +226,7 @@ export default function Dashboard({ session }: { session: any }) {
         </div>
       </div>
 
-      {/* Recent Activity Table with Delete Capability */}
+      {/* Recent Activity Table with Row Click Interaction */}
       <div className="glass-panel p-6 rounded-2xl border border-white/5">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4">Recent Services Logged</h3>
         {filteredData.length === 0 ? (
@@ -233,7 +246,11 @@ export default function Dashboard({ session }: { session: any }) {
               </thead>
               <tbody>
                 {filteredData.map((item, i) => (
-                  <tr key={item.id || i} className="border-b border-white/5 hover:bg-white/5 transition-all">
+                  <tr 
+                    key={item.id || i} 
+                    onClick={() => setSelectedPreviewLog(item)} // Trigger detailed modal preview
+                    className="border-b border-white/5 hover:bg-white/10 cursor-pointer transition-all duration-150"
+                  >
                     <td className="py-3 col-span-1">
                       <div className="font-semibold text-white">{item.client_name}</div>
                       <div className="text-[10px] text-gray-400">{item.client_contact}</div>
@@ -243,11 +260,11 @@ export default function Dashboard({ session }: { session: any }) {
                       {item.description && <div className="text-[10px] text-gray-400 truncate max-w-[150px]">{item.description}</div>}
                     </td>
                     <td className="py-3 text-gray-400">
-                      {new Date(item.service_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {new Date(item.service_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                     <td className="py-3 text-right text-neonCyan font-mono font-semibold">MWK {formatCurrency(Number(item.price))}</td>
                     <td className="py-3 text-right text-neonPink font-mono font-semibold">MWK {formatCurrency(Number(item.cost))}</td>
-                    <td className="py-3 text-center">
+                    <td className="py-3 text-center" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => deleteService(item.id!)}
                         className="text-red-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-500/10 transition cursor-pointer"
@@ -271,6 +288,14 @@ export default function Dashboard({ session }: { session: any }) {
         <ServiceForm 
           onAdd={addService}
           onClose={() => setIsOpenForm(false)}
+        />
+      )}
+
+      {/* Render Pop-up overlay if active */}
+      {selectedPreviewLog && (
+        <ServiceDetailModal 
+          log={selectedPreviewLog}
+          onClose={() => setSelectedPreviewLog(null)}
         />
       )}
     </div>
